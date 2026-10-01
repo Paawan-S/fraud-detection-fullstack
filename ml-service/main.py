@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import joblib
 from pydantic import BaseModel
 import pandas as pd
@@ -57,20 +57,23 @@ class Transaction(BaseModel):
 
 @app.post("/predict")
 def predict(transaction: Transaction):
-    input_df = pd.DataFrame([transaction.dict()])
+    try:
+        input_df = pd.DataFrame([transaction.dict()])
 
-    prediction = model.predict(input_df)[0]
-    probability = model.predict_proba(input_df)[0][1]
+        prediction = model.predict(input_df)[0]
+        probability = model.predict_proba(input_df)[0][1]
 
-    shap_values = explainer.shap_values(input_df)
-    shap_values_fraud = shap_values[0, :, 1]
+        shap_values = explainer.shap_values(input_df)
+        shap_values_fraud = shap_values[0, :, 1]
 
-    feature_impact = list(zip(input_df.columns, shap_values_fraud))
-    feature_impact.sort(key=lambda x: abs(x[1]), reverse=True)
-    top_features = [{"feature": f, "impact": round(float(v), 4)} for f, v in feature_impact[:5]]
+        feature_impact = list(zip(input_df.columns, shap_values_fraud))
+        feature_impact.sort(key=lambda x: abs(x[1]), reverse=True)
+        top_features = [{"feature": f, "impact": round(float(v), 4)} for f, v in feature_impact[:5]]
 
-    return {
-        "prediction": int(prediction),
-        "fraud_probability": round(float(probability), 4),
-        "top_contributing_features": top_features
-    }
+        return {
+            "prediction": int(prediction),
+            "fraud_probability": round(float(probability), 4),
+            "top_contributing_features": top_features
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
