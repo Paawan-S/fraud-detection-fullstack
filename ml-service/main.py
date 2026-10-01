@@ -2,11 +2,14 @@ from fastapi import FastAPI
 import joblib
 from pydantic import BaseModel
 import pandas as pd
+import shap
+import numpy as np
 
 app = FastAPI()
 
 # Loaded once, when the server starts - not on every request
 model = joblib.load('../models/fraud_model.pkl')
+explainer = shap.TreeExplainer(model)
 
 @app.get("/")
 def read_root():
@@ -54,15 +57,20 @@ class Transaction(BaseModel):
 
 @app.post("/predict")
 def predict(transaction: Transaction):
-    # Convert the incoming request into the same shape the model expects
     input_df = pd.DataFrame([transaction.dict()])
 
-    # Get the model's prediction and its probability
     prediction = model.predict(input_df)[0]
     probability = model.predict_proba(input_df)[0][1]
 
+    shap_values = explainer.shap_values(input_df)
+    shap_values_fraud = shap_values[0, :, 1]
+
+    feature_impact = list(zip(input_df.columns, shap_values_fraud))
+    feature_impact.sort(key=lambda x: abs(x[1]), reverse=True)
+    top_features = [{"feature": f, "impact": round(float(v), 4)} for f, v in feature_impact[:5]]
+
     return {
         "prediction": int(prediction),
-        "fraud_probability": round(float(probability), 4)
+        "fraud_probability": round(float(probability), 4),
+        "top_contributing_features": top_features
     }
-
