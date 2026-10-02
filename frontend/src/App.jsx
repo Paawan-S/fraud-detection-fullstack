@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import TransactionForm from './components/TransactionForm';
+import PredictionResult from './components/PredictionResult';
 import './App.css';
 
 const FEATURE_FIELDS = [
@@ -61,9 +62,7 @@ function App() {
             />
             {loading && <p>Checking transaction...</p>}
             {error && <p className="error">Error: {error}</p>}
-            {result && (
-                <pre>{JSON.stringify(result, null, 2)}</pre>
-            )}
+            {result && <PredictionResult result={result} />}
         </div>
     );
 }
