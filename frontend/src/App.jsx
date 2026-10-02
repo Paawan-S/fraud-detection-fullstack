@@ -14,6 +14,9 @@ const initialTransaction = Object.fromEntries(
 
 function App() {
     const [transaction, setTransaction] = useState(initialTransaction);
+    const [result, setResult] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -23,9 +26,29 @@ function App() {
         }));
     }
 
-    function handleSubmit() {
-        console.log('Submitting transaction:', transaction);
-        // Step 6 will replace this with a real call to your Java backend
+    async function handleSubmit() {
+        setLoading(true);
+        setError(null);
+        setResult(null);
+
+        try {
+            const response = await fetch('http://localhost:8080/api/transactions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(transaction),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server responded with status ${response.status}`);
+            }
+
+            const data = await response.json();
+            setResult(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -36,6 +59,11 @@ function App() {
                 onChange={handleChange}
                 onSubmit={handleSubmit}
             />
+            {loading && <p>Checking transaction...</p>}
+            {error && <p className="error">Error: {error}</p>}
+            {result && (
+                <pre>{JSON.stringify(result, null, 2)}</pre>
+            )}
         </div>
     );
 }
