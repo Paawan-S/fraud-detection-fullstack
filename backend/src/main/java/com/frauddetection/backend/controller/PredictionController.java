@@ -1,16 +1,19 @@
 package com.frauddetection.backend.controller;
 
-import com.frauddetection.backend.model.Transaction;
-import com.frauddetection.backend.model.TransactionRecord;
-import com.frauddetection.backend.dto.PredictionResponse;
-import com.frauddetection.backend.repository.TransactionRepository;
-import com.frauddetection.backend.service.PredictionService;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.util.stream.Collectors;
+import com.frauddetection.backend.dto.PredictionResponse;
+import com.frauddetection.backend.model.Transaction;
+import com.frauddetection.backend.model.TransactionRecord;
+import com.frauddetection.backend.repository.TransactionRepository;
+import com.frauddetection.backend.service.PredictionService;
 
 @RestController
 public class PredictionController {
@@ -22,6 +25,11 @@ public class PredictionController {
         this.predictionService = predictionService;
         this.transactionRepository = transactionRepository;
     }
+
+    @GetMapping("/api/transactions")
+public List<TransactionRecord> getHistory() {
+    return transactionRepository.findAllByOrderByCreatedAtDesc();
+}
 
     @PostMapping("/api/transactions")
     public PredictionResponse receiveTransaction(@RequestBody Transaction transaction) {
