@@ -2,6 +2,7 @@ import { useState } from 'react';
 import TransactionForm from './components/TransactionForm';
 import PredictionResult from './components/PredictionResult';
 import { ShieldCheck } from 'lucide-react';
+import Sidebar from './components/Sidebar';
 import './App.css';
 
 const FEATURE_FIELDS = [
@@ -13,6 +14,7 @@ const FEATURE_FIELDS = [
 const initialTransaction = Object.fromEntries(
     FEATURE_FIELDS.map((field) => [field, 0])
 );
+
 
 const GENUINE_EXAMPLE = {
     Time: 160760.0, V1: -0.6744660646, V2: 1.4081050197, V3: -1.1106220536, V4: -1.3283657784,
@@ -37,6 +39,7 @@ function App() {
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [view, setView] = useState('single');
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -76,71 +79,85 @@ function App() {
     }
 
     return (
-        <div className="console">
-            <div className="console-header">
-                <div className="brand">
-                    <ShieldCheck size={24} />
-                    <h1>Fraud Detection Terminal</h1>
-                </div>
-                <p className="tagline">
-                    Score a transaction and see exactly which signals drove the model's decision.
-                </p>
-            </div>
+    <div className="app-shell">
+        <Sidebar view={view} onChangeView={setView} />
 
-            <div className="console-grid">
-                <section className="panel">
-                    <h2 className="panel-title">Transaction input</h2>
-
-                    <div className="example-buttons">
-                        <button className="example-btn" onClick={() => loadExample(GENUINE_EXAMPLE)}>
-                            Load genuine example
-                        </button>
-                        <button className="example-btn example-btn-fraud" onClick={() => loadExample(FRAUD_EXAMPLE)}>
-                            Load fraud example
-                        </button>
+        <main className="main-area">
+            {view === 'single' && (
+                <div className="console">
+                    <div className="console-header">
+                        <div className="brand">
+                            <ShieldCheck size={24} />
+                            <h1>Fraud Detection Terminal</h1>
+                        </div>
+                        <p className="tagline">
+                            Score a transaction and see exactly which signals drove the model's decision.
+                        </p>
                     </div>
 
-                    <TransactionForm
-                        transaction={transaction}
-                        onChange={handleChange}
-                        onSubmit={handleSubmit}
-                    />
-                </section>
+                    <div className="console-grid">
+                        <section className="panel">
+                            <h2 className="panel-title">Transaction input</h2>
 
-                <section className="panel">
-                    <h2 className="panel-title">Analysis</h2>
-
-                    {loading && (
-                        <div>
-                            <div className="scan-track">
-                                <div className="scan-bar" />
+                            <div className="example-buttons">
+                                <button className="example-btn" onClick={() => loadExample(GENUINE_EXAMPLE)}>
+                                    Load genuine example
+                                </button>
+                                <button className="example-btn example-btn-fraud" onClick={() => loadExample(FRAUD_EXAMPLE)}>
+                                    Load fraud example
+                                </button>
                             </div>
-                            <p className="scan-label">Analyzing transaction...</p>
-                        </div>
-                    )}
 
-                    {!loading && error && (
-                        <div className="error-state">
-                            <p className="error-line">Request failed</p>
-                            <p>{error}</p>
-                        </div>
-                    )}
+                            <TransactionForm
+                                transaction={transaction}
+                                onChange={handleChange}
+                                onSubmit={handleSubmit}
+                            />
+                        </section>
 
-                    {!loading && !error && !result && (
-                        <div className="idle-state">
-                            <p className="idle-line">awaiting transaction<span className="cursor">_</span></p>
-                            <p className="idle-hint">
-                                Enter transaction details on the left and run a check to see the
-                                model's verdict and factor breakdown here.
-                            </p>
-                        </div>
-                    )}
+                        <section className="panel">
+                            <h2 className="panel-title">Analysis</h2>
 
-                    {!loading && result && <PredictionResult result={result} />}
-                </section>
-            </div>
-        </div>
-    );
+                            {loading && (
+                                <div>
+                                    <div className="scan-track">
+                                        <div className="scan-bar" />
+                                    </div>
+                                    <p className="scan-label">Analyzing transaction...</p>
+                                </div>
+                            )}
+
+                            {!loading && error && (
+                                <div className="error-state">
+                                    <p className="error-line">Request failed</p>
+                                    <p>{error}</p>
+                                </div>
+                            )}
+
+                            {!loading && !error && !result && (
+                                <div className="idle-state">
+                                    <p className="idle-line">awaiting transaction<span className="cursor">_</span></p>
+                                    <p className="idle-hint">
+                                        Enter transaction details on the left and run a check to see the
+                                        model's verdict and factor breakdown here.
+                                    </p>
+                                </div>
+                            )}
+
+                            {!loading && result && <PredictionResult result={result} />}
+                        </section>
+                    </div>
+                </div>
+            )}
+
+            {view === 'history' && (
+                <div className="console">
+                    <p style={{ color: 'var(--text-dim)' }}>History view coming in the next step...</p>
+                </div>
+            )}
+        </main>
+    </div>
+);
 }
 
 export default App;
