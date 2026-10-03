@@ -16,7 +16,7 @@ function TransactionForm({ transaction, onChange, onSubmit }) {
                         <div key={field} className="form-field">
                             <label htmlFor={field}>{field}</label>
                             <input
-                                type="number" step="any" id={field} name={field}
+                                type="number" step="any" min="0" id={field} name={field}
                                 value={transaction[field]} onChange={onChange}
                             />
                         </div>

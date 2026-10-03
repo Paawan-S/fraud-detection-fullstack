@@ -348,6 +348,29 @@
     .sidebar-nav { flex-direction: row; }
 }
 
+.history-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.history-item {
+    display: grid;
+    grid-template-columns: 60px 80px 80px 70px 1fr;
+    gap: 1rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0.55rem 0.8rem;
+}
+
+.history-id { color: var(--text-dim); }
+.history-time { color: var(--text-dim); text-align: right; }
+
 .feature-name { font-weight: 700; }
 .impact-up, .impact-down { display: flex; align-items: center; gap: 0.25rem; font-weight: 600; }
 .impact-up { color: var(--red); }

@@ -3,6 +3,7 @@ import TransactionForm from './components/TransactionForm';
 import PredictionResult from './components/PredictionResult';
 import { ShieldCheck } from 'lucide-react';
 import Sidebar from './components/Sidebar';
+import HistoryView from './components/HistoryView';
 import './App.css';
 
 const FEATURE_FIELDS = [
@@ -151,10 +152,17 @@ function App() {
             )}
 
             {view === 'history' && (
-                <div className="console">
-                    <p style={{ color: 'var(--text-dim)' }}>History view coming in the next step...</p>
-                </div>
-            )}
+    <div className="console">
+        <div className="console-header">
+            <div className="brand">
+                <ShieldCheck size={24} />
+                <h1>Transaction History</h1>
+            </div>
+            <p className="tagline">Every transaction checked in this session, newest first.</p>
+        </div>
+        <HistoryView />
+    </div>
+)}
         </main>
     </div>
 );
