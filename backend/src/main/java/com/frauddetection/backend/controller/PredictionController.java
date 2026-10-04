@@ -38,36 +38,14 @@ public List<TransactionRecord> getHistory() {
 
         // 2. Build a record combining the transaction and the result
         TransactionRecord record = new TransactionRecord();
-        record.setTime(transaction.getTime());
-        record.setV1(transaction.getV1());
-        record.setV2(transaction.getV2());
-        record.setV3(transaction.getV3());
-        record.setV4(transaction.getV4());
-        record.setV5(transaction.getV5());
-        record.setV6(transaction.getV6());
-        record.setV7(transaction.getV7());
-        record.setV8(transaction.getV8());
-        record.setV9(transaction.getV9());
-        record.setV10(transaction.getV10());
-        record.setV11(transaction.getV11());
-        record.setV12(transaction.getV12());
-        record.setV13(transaction.getV13());
-        record.setV14(transaction.getV14());
-        record.setV15(transaction.getV15());
-        record.setV16(transaction.getV16());
-        record.setV17(transaction.getV17());
-        record.setV18(transaction.getV18());
-        record.setV19(transaction.getV19());
-        record.setV20(transaction.getV20());
-        record.setV21(transaction.getV21());
-        record.setV22(transaction.getV22());
-        record.setV23(transaction.getV23());
-        record.setV24(transaction.getV24());
-        record.setV25(transaction.getV25());
-        record.setV26(transaction.getV26());
-        record.setV27(transaction.getV27());
-        record.setV28(transaction.getV28());
+        record.setStep(transaction.getStep());
+        record.setType(transaction.getType());
         record.setAmount(transaction.getAmount());
+        record.setOldbalanceOrg(transaction.getOldbalanceOrg());
+        record.setNewbalanceOrig(transaction.getNewbalanceOrig());
+        record.setOldbalanceDest(transaction.getOldbalanceDest());
+        record.setNewbalanceDest(transaction.getNewbalanceDest());
+        record.setIsFlaggedFraud(transaction.getIsFlaggedFraud());
 
         record.setPrediction(prediction.getPrediction());
         record.setFraudProbability(prediction.getFraudProbability());
