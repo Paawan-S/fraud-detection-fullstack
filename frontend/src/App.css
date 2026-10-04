@@ -477,3 +477,12 @@
     border: 1px solid var(--line); color: var(--text-dim); padding: 4px 10px; border-radius: 4px; cursor: pointer;
 }
 .copy-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+.user-info { display: flex; align-items: center; gap: 8px; }
+.user-name { font-size: 0.82rem; font-weight: 500; }
+.sidebar-footer {
+    margin-top: auto; display: flex; align-items: center; gap: 8px;
+    font-size: 0.7rem; color: var(--text-dim); padding: 10px;
+    border-top: 1px solid var(--line);
+}
+.sidebar { display: flex; flex-direction: column; }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Bell, ShieldCheck } from 'lucide-react';
+import { Bell, ShieldCheck, Sun, Moon } from 'lucide-react';
 
-function TopHeader() {
+function TopHeader({ theme, onToggleTheme }) {
     const [online, setOnline] = useState(false);
     const [history, setHistory] = useState([]);
     const [bellOpen, setBellOpen] = useState(false);
@@ -59,6 +59,10 @@ function TopHeader() {
                     <span className="status-dot" /> {online ? 'System Online' : 'Backend Unreachable'}
                 </div>
 
+                <button className="icon-btn" onClick={onToggleTheme}>
+                    {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+                </button>
+
                 <div className="bell-wrap" ref={bellRef}>
                     <button className="icon-btn" onClick={() => setBellOpen((o) => !o)}>
                         <Bell size={18} />
@@ -78,10 +82,13 @@ function TopHeader() {
                     )}
                 </div>
 
-                <div className="user-badge" title="Paawan Singhai · Fraud Analyst">PS</div>
+                <div className="user-info">
+                    <div className="user-badge">PS</div>
+                    <span className="user-name">Paawan Singhai</span>
+                </div>
             </div>
         </header>
     );
 }
 
-export default TopHeader;
+export default TopHeader; 

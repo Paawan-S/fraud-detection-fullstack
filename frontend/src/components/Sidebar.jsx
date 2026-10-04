@@ -1,4 +1,4 @@
-import { LayoutDashboard, Activity, History, BarChart3, Bell, Settings } from 'lucide-react';
+import { LayoutDashboard, Activity, History, BarChart3, Bell, Settings, ShieldCheck } from 'lucide-react';
 
 const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, enabled: true },
@@ -26,6 +26,11 @@ function Sidebar({ view, onChangeView }) {
                     </button>
                 ))}
             </nav>
+
+            <div className="sidebar-footer">
+                <ShieldCheck size={16} />
+                <span>AI-Powered Fraud Detection System</span>
+            </div>
         </aside>
     );
 }
