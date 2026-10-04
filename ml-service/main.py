@@ -7,8 +7,7 @@ import numpy as np
 
 app = FastAPI()
 
-# Loaded once, when the server starts - not on every request
-model = joblib.load('../models/fraud_model.pkl')
+model = joblib.load('../models/fraud_model_paysim.pkl')
 explainer = shap.TreeExplainer(model)
 
 @app.get("/")
@@ -20,45 +19,30 @@ def health_check():
     return {
         "status": "ok",
         "model_loaded": True,
-        "n_features_expected": model.n_features_in_
+        "n_features_expected": model.n_features_in_,
     }
 
 class Transaction(BaseModel):
-    Time: float
-    V1: float
-    V2: float
-    V3: float
-    V4: float
-    V5: float
-    V6: float
-    V7: float
-    V8: float
-    V9: float
-    V10: float
-    V11: float
-    V12: float
-    V13: float
-    V14: float
-    V15: float
-    V16: float
-    V17: float
-    V18: float
-    V19: float
-    V20: float
-    V21: float
-    V22: float
-    V23: float
-    V24: float
-    V25: float
-    V26: float
-    V27: float
-    V28: float
-    Amount: float
+    step: int
+    type: str
+    amount: float
+    oldbalanceOrg: float
+    newbalanceOrig: float
+    oldbalanceDest: float
+    newbalanceDest: float
+    isFlaggedFraud: int = 0
 
 @app.post("/predict")
 def predict(transaction: Transaction):
     try:
-        input_df = pd.DataFrame([transaction.dict()])
+        data = transaction.dict()
+        tx_type = data.pop('type')
+
+        for t in ['CASH_OUT', 'DEBIT', 'PAYMENT', 'TRANSFER']:
+            data[f'type_{t}'] = 1 if tx_type == t else 0
+
+        input_df = pd.DataFrame([data])
+        input_df = input_df.reindex(columns=model.feature_names_in_, fill_value=0)
 
         prediction = model.predict(input_df)[0]
         probability = model.predict_proba(input_df)[0][1]
@@ -73,7 +57,7 @@ def predict(transaction: Transaction):
         return {
             "prediction": int(prediction),
             "fraud_probability": round(float(probability), 4),
-            "top_contributing_features": top_features
+            "top_contributing_features": top_features,
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
