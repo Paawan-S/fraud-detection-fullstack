@@ -2,6 +2,23 @@ import { ShieldAlert, ShieldCheck, TrendingUp, TrendingDown } from 'lucide-react
 
 const TOTAL_SEGMENTS = 24;
 
+
+function formatFeatureName(name) {
+    const labels = {
+        step: 'Time step',
+        amount: 'Amount',
+        oldbalanceOrg: 'Sender balance (before)',
+        newbalanceOrig: 'Sender balance (after)',
+        oldbalanceDest: 'Receiver balance (before)',
+        newbalanceDest: 'Receiver balance (after)',
+        isFlaggedFraud: 'Simulator flag',
+        type_CASH_OUT: 'Type: Cash out',
+        type_DEBIT: 'Type: Debit',
+        type_PAYMENT: 'Type: Payment',
+        type_TRANSFER: 'Type: Transfer',
+    };
+    return labels[name] || name;
+}
 function PredictionResult({ result }) {
     const isFraud = result.prediction === 1;
     const probabilityPercent = (result.fraud_probability * 100).toFixed(1);
@@ -37,7 +54,7 @@ function PredictionResult({ result }) {
                 {result.top_contributing_features.map((f) => (
                     <li key={f.feature} className="feature-item">
                         <div className="feature-item-top">
-                            <span className="feature-name">{f.feature}</span>
+                            <span className="feature-name">{formatFeatureName(f.feature)}</span>
                             <span className={f.impact > 0 ? 'impact-up' : 'impact-down'}>
                                 {f.impact > 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                                 {Math.abs(f.impact)}
