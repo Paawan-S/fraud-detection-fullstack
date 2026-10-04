@@ -19,6 +19,10 @@ function formatFeatureName(name) {
     };
     return labels[name] || name;
 }
+
+function copyResult(result) {
+    navigator.clipboard.writeText(JSON.stringify(result, null, 2));
+}
 function PredictionResult({ result }) {
     const isFraud = result.prediction === 1;
     const probabilityPercent = (result.fraud_probability * 100).toFixed(1);
@@ -27,6 +31,7 @@ function PredictionResult({ result }) {
 
     return (
         <div className={`result-wrap ${isFraud ? 'is-fraud' : 'is-genuine'}`}>
+            <button className="copy-btn" onClick={() => copyResult(result)}>Copy result</button>
             <div className="result-verdict">
                 {isFraud ? <ShieldAlert size={22} /> : <ShieldCheck size={22} />}
                 {isFraud ? 'Fraud detected' : 'Transaction genuine'}

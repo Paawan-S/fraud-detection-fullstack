@@ -13,8 +13,7 @@ function HistoryView() {
             try {
                 const response = await fetch('http://localhost:8080/api/transactions');
                 if (!response.ok) throw new Error(`Server responded with status ${response.status}`);
-                const data = await response.json();
-                setHistory(data);
+                setHistory(await response.json());
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -42,9 +41,7 @@ function HistoryView() {
                         <CartesianGrid strokeDasharray="3 3" stroke="#262b33" />
                         <XAxis dataKey="id" stroke="#7a8089" fontSize={11} fontFamily="JetBrains Mono" />
                         <YAxis stroke="#7a8089" fontSize={11} fontFamily="JetBrains Mono" unit="%" />
-                        <Tooltip
-                            contentStyle={{ background: '#15181d', border: '1px solid #262b33', fontFamily: 'JetBrains Mono', fontSize: 12 }}
-                        />
+                        <Tooltip contentStyle={{ background: '#15181d', border: '1px solid #262b33', fontFamily: 'JetBrains Mono', fontSize: 12 }} />
                         <Bar dataKey="risk" radius={[2, 2, 0, 0]}>
                             {chartData.map((entry) => (
                                 <Cell key={entry.id} fill={entry.risk >= 50 ? '#ff5c5c' : '#5cd6a0'} />
@@ -56,19 +53,27 @@ function HistoryView() {
 
             <section className="panel">
                 <h2 className="panel-title">Transaction log</h2>
-                <ul className="history-list">
-                    {history.map((t) => (
-                        <li key={t.id} className="history-item">
-                            <span className="history-id">#{t.id}</span>
-                            <span className="history-amount">₹{t.amount}</span>
-                            <span className={t.prediction === 1 ? 'impact-up' : 'impact-down'}>
-                                {t.prediction === 1 ? 'Fraud' : 'Genuine'}
-                            </span>
-                            <span className="history-prob">{(t.fraudProbability * 100).toFixed(1)}%</span>
-                            <span className="history-time">{new Date(t.createdAt).toLocaleString()}</span>
-                        </li>
-                    ))}
-                </ul>
+                <table className="recent-table">
+                    <thead>
+                        <tr><th>ID</th><th>Amount</th><th>Type</th><th>Risk</th><th>Status</th><th style={{ textAlign: 'right' }}>Time</th></tr>
+                    </thead>
+                    <tbody>
+                        {history.map((t) => (
+                            <tr key={t.id}>
+                                <td>#{t.id}</td>
+                                <td>₹{t.amount.toLocaleString()}</td>
+                                <td>{t.type}</td>
+                                <td>{(t.fraudProbability * 100).toFixed(1)}%</td>
+                                <td className={t.prediction === 1 ? 'impact-up' : 'impact-down'}>
+                                    {t.prediction === 1 ? 'FRAUD' : 'SAFE'}
+                                </td>
+                                <td style={{ color: 'var(--text-dim)', textAlign: 'right' }}>
+                                    {new Date(t.createdAt).toLocaleString()}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </section>
         </div>
     );

@@ -4,6 +4,8 @@ import PredictionResult from './components/PredictionResult';
 import HistoryView from './components/HistoryView';
 import { ShieldCheck } from 'lucide-react';
 import Sidebar from './components/Sidebar';
+import Dashboard from './components/Dashboard';
+import TopHeader from './components/TopHeader';
 import './App.css';
 
 const initialTransaction = {
@@ -30,7 +32,7 @@ function App() {
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [view, setView] = useState('single');
+    const [view, setView] = useState('dashboard');
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -70,21 +72,29 @@ function App() {
     }
 
     return (
+        <div className="app-root">
+        <TopHeader />
         <div className="app-shell">
             <Sidebar view={view} onChangeView={setView} />
 
             <main className="main-area">
+                {view === 'dashboard' && (
+    <div className="console">
+        <Dashboard />
+    </div>
+)}
                 {view === 'single' && (
                     <div className="console">
                         <div className="console-header">
-                            <div className="brand">
-                                <ShieldCheck size={24} />
-                                <h1>Fraud Detection Terminal</h1>
-                            </div>
-                            <p className="tagline">
-                                Score a transaction and see exactly which signals drove the model's decision.
-                            </p>
-                        </div>
+    <h1 className="page-title">Threat Detection</h1>
+    <p className="tagline">Score a transaction and see exactly which signals drove the model's decision.</p>
+    <div className="model-chip-row">
+        <span className="model-chip">Algorithm: Random Forest</span>
+        <span className="model-chip">Recall: 98%</span>
+        <span className="model-chip">Precision: 47%</span>
+        <span className="model-chip">Trained on: PaySim · 6.3M transactions</span>
+    </div>
+</div>
 
                         <div className="console-grid">
                             <section className="panel">
@@ -153,9 +163,10 @@ function App() {
                         <HistoryView />
                     </div>
                 )}
-            </main>
+                       </main>
         </div>
-    );
+    </div>
+);
 }
 
 export default App;
