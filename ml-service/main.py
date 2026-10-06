@@ -4,10 +4,12 @@ from pydantic import BaseModel
 import pandas as pd
 import shap
 import numpy as np
+import os
 
 app = FastAPI()
 
-model = joblib.load('../models/fraud_model_paysim.pkl')
+MODEL_PATH = os.getenv("MODEL_PATH", "../models/fraud_model_paysim.pkl")
+model = joblib.load(MODEL_PATH)
 explainer = shap.TreeExplainer(model)
 
 @app.get("/")
