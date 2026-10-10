@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_URL } from '../config';
 import {
     ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid,
     PieChart, Pie, Cell, Legend,
@@ -26,7 +27,7 @@ function Dashboard() {
     useEffect(() => {
         async function fetchHistory() {
             try {
-                const res = await fetch('http://localhost:8080/api/transactions');
+                const res = await fetch(`${API_URL}/api/transactions`);
                 if (res.ok) setHistory(await res.json());
             } catch {
                 // history stays empty; the status pill already reflects the problem

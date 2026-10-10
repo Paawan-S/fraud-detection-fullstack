@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_URL } from '../config';
 import {
     ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell,
 } from 'recharts';
@@ -11,7 +12,7 @@ function HistoryView() {
     useEffect(() => {
         async function fetchHistory() {
             try {
-                const response = await fetch('http://localhost:8080/api/transactions');
+                const response = await fetch(`${API_URL}/api/transactions`);
                 if (!response.ok) throw new Error(`Server responded with status ${response.status}`);
                 setHistory(await response.json());
             } catch (err) {

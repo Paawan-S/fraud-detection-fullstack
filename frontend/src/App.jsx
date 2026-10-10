@@ -5,6 +5,7 @@ import HistoryView from './components/HistoryView';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import TopHeader from './components/TopHeader';
+import { API_URL } from './config';
 import './App.css';
 
 const initialTransaction = {
@@ -61,7 +62,7 @@ function App() {
         setResult(null);
 
         try {
-            const response = await fetch('http://localhost:8080/api/transactions', {
+            const response = await fetch(`${API_URL}/api/transactions`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(transaction),

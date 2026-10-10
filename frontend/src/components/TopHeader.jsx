@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Bell, ShieldCheck, Sun, Moon } from 'lucide-react';
+import { API_URL } from '../config';
 
 function TopHeader({ theme, onToggleTheme }) {
     const [online, setOnline] = useState(false);
@@ -10,7 +11,7 @@ function TopHeader({ theme, onToggleTheme }) {
     useEffect(() => {
         async function checkStatus() {
             try {
-                const res = await fetch('http://localhost:8080/');
+                const res = await fetch(`${API_URL}/`);
                 setOnline(res.ok);
             } catch {
                 setOnline(false);
@@ -24,7 +25,7 @@ function TopHeader({ theme, onToggleTheme }) {
     useEffect(() => {
         async function fetchAlerts() {
             try {
-                const res = await fetch('http://localhost:8080/api/transactions');
+                const res = await fetch('`${API_URL}/api/transactions`');
                 if (res.ok) setHistory(await res.json());
             } catch {
                 // bell just shows zero alerts
